@@ -3,6 +3,6 @@
 
 #include <fltKernel.h>
 
-UNICODE_STRING ExtractFileName(_In_ PFLT_CALLBACK_DATA Data);
+UNICODE_STRING ExtractFileName(_In_ PFLT_CALLBACK_DATA Data, PCFLT_RELATED_OBJECTS FltObjects);
 
 #endif

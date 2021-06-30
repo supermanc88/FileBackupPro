@@ -1,4 +1,4 @@
-/*++
+﻿/*++
 
 Module Name:
 
@@ -21,6 +21,7 @@ Environment:
 
 
 #include "FileBackup.h"
+#include "tools.h"
 
 #pragma prefast(disable:__WARNING_ENCODE_MEMBER_FUNCTION_POINTER, "Not valid for kernel mode drivers")
 
@@ -28,16 +29,7 @@ Environment:
 PFLT_FILTER gFilterHandle;
 ULONG_PTR OperationStatusCtx = 1;
 
-#define PTDBG_TRACE_ROUTINES            0x00000001
-#define PTDBG_TRACE_OPERATION_STATUS    0x00000002
-
 ULONG gTraceFlags = 1;
-
-
-#define PT_DBG_PRINT( _dbgLevel, _string )          \
-    (FlagOn(gTraceFlags,(_dbgLevel)) ?              \
-        DbgPrint _string :                          \
-        ((int)0))
 
 FILEBACKUP_DATA FileBackupData;
 
@@ -397,7 +389,7 @@ Return Value:
 
 --*/
 {
-    UNREFERENCED_PARAMETER( FltObjects );
+    /** UNREFERENCED_PARAMETER( FltObjects ); */
     UNREFERENCED_PARAMETER( Flags );
     UNREFERENCED_PARAMETER( VolumeDeviceType );
     UNREFERENCED_PARAMETER( VolumeFilesystemType );
@@ -406,6 +398,23 @@ Return Value:
 
     PT_DBG_PRINT( PTDBG_TRACE_ROUTINES,
                   ("FileBackup!FileBackupInstanceSetup: Entered\n") );
+
+	PDEVICE_OBJECT devObj = NULL;
+	NTSTATUS status = STATUS_SUCCESS;
+	UNICODE_STRING dosName;
+
+	status = FltGetDiskDeviceObject(FltObjects->Volume, &devObj);
+
+	if (NT_SUCCESS(status))
+	{
+		status = IoVolumeDeviceToDosName(devObj, &dosName);
+		PT_DBG_PRINT(PTDBG_TRACE_ROUTINES, ("!!! FileBackup.sys --- %s, dosName = [%wZ]\n", __FUNCTION__, &dosName));
+	}
+
+	if (devObj)
+	{
+		ObDereferenceObject(devObj);
+	}
 
     return STATUS_SUCCESS;
 }
@@ -1004,6 +1013,13 @@ FLT_PREOP_CALLBACK_STATUS FileBackupPreCreate (
 		PT_DBG_PRINT( PTDBG_TRACE_ROUTINES, ( "!!! FileBackup.sys --- %s current open dir = [%wZ]\n", __FUNCTION__, &FltObjects->FileObject->FileName) );
 		return FLT_PREOP_SUCCESS_NO_CALLBACK;
 	}
+
+	UNICODE_STRING fileName = ExtractFileName(Data, FltObjects);
+	PT_DBG_PRINT( PTDBG_TRACE_ROUTINES, ( "!!! FileBackup.sys --- %s current open fileName = [%wZ]\n", __FUNCTION__, &fileName) );
+
+	// 用完就释放掉
+	RtlFreeUnicodeString(&fileName);
+
 	return FLT_PREOP_SUCCESS_WITH_CALLBACK;
 }
 
@@ -1119,8 +1135,32 @@ FLT_PREOP_CALLBACK_STATUS FileBackupPreWrite (
     _Flt_CompletionContext_Outptr_ PVOID *CompletionContext
     )
 {
+	PFLT_IO_PARAMETER_BLOCK iopb = Data->Iopb;
+	ULONG writeLen = iopb->Parameters.Write.Length;
+	LARGE_INTEGER writeOffset = iopb->Parameters.Write.ByteOffset;
 
-	PT_DBG_PRINT( PTDBG_TRACE_ROUTINES, ( "!!! FileBackup.sys --- %s\n", __FUNCTION__ ) );
+	PVOID writeBuffer = NULL;
+
+	if (iopb->Parameters.Write.MdlAddress != NULL)
+	{
+		writeBuffer = MmGetSystemAddressForMdlSafe( iopb->Parameters.Write.MdlAddress, NormalPagePriority | MdlMappingNoExecute );
+	}
+	else
+	{
+		writeBuffer = iopb->Parameters.Write.WriteBuffer;
+	}
+
+	PT_DBG_PRINT( PTDBG_TRACE_ROUTINES, ( "!!! FileBackup.sys --- %s, writeLen = [%d], offset = [%d]\n", __FUNCTION__, writeLen, writeOffset.u.LowPart ) );
+
+	int i;
+	for (i = 0; i < writeLen; i++)
+	{
+		KdPrint(("0x%02x ", *((UCHAR *)writeBuffer + 1) ));
+		if ( i != 0 && i % 16 == 0 )
+		{
+			KdPrint(("\n"));
+		}
+	}
 	return FLT_PREOP_SUCCESS_WITH_CALLBACK;
 }
 
