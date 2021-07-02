@@ -107,7 +107,7 @@ NTSTATUS CreateFileOrDir(PCFLT_RELATED_OBJECTS FltObjects, PWCHAR pwFilePath, BO
 * \param pwFilePath pwFilePath pointer to the filepath, such as \??\C:\XXXX\YYY\
 * \return NTSTATUS
 */
-NTSTATUS CreateDirectory(PCFLT_RELATED_OBJECTS FltObjects, IN PWCHAR pwFilePath)
+NTSTATUS CreateDirectory(PCFLT_RELATED_OBJECTS FltObjects, PWCHAR pwFilePath)
 {
 	NTSTATUS status = STATUS_SUCCESS;
 	PWCHAR pwDir = NULL;

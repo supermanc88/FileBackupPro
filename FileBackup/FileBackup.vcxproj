@@ -51,6 +51,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="backup_file.c" />
+    <ClCompile Include="setting.c" />
     <ClCompile Include="tools.c" />
     <ResourceCompile Include="FileBackup.rc" />
     <ClCompile Include="FileBackup.c" />
@@ -262,7 +264,9 @@
     <FilesToPackage Include="@(Inf->'%(CopyOutput)')" Condition="'@(Inf)'!=''" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="backup_file.h" />
     <ClInclude Include="FileBackup.h" />
+    <ClInclude Include="setting.h" />
     <ClInclude Include="tools.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

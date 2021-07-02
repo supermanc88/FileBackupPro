@@ -10,4 +10,8 @@
 #define BACKUP_MODE_WHEN_INTERVAL       2           // 通过设置时间间隔来备份
 
 NTSTATUS CopyFileToBackupPath(PWCHAR srcFilePath);
+
+NTSTATUS CreateFileOrDir(PCFLT_RELATED_OBJECTS FltObjects, PWCHAR pwFilePath, BOOLEAN isFile);
+
+NTSTATUS CreateDirectory(PCFLT_RELATED_OBJECTS FltObjects, PWCHAR pwFilePath);
 #endif

@@ -22,6 +22,7 @@ Environment:
 
 #include "FileBackup.h"
 #include "tools.h"
+#include "backup_file.h"
 
 #pragma prefast(disable:__WARNING_ENCODE_MEMBER_FUNCTION_POINTER, "Not valid for kernel mode drivers")
 
@@ -32,6 +33,8 @@ ULONG_PTR OperationStatusCtx = 1;
 ULONG gTraceFlags = 1;
 
 FILEBACKUP_DATA FileBackupData;
+
+BOOLEAN gTest = FALSE;
 
 /*************************************************************************
     Prototypes
@@ -621,6 +624,7 @@ Return Value:
     }
 
 
+
     return status;
 }
 
@@ -1163,7 +1167,7 @@ FLT_PREOP_CALLBACK_STATUS FileBackupPreWrite (
 	// 		KdPrint(("\n"));
 	// 	}
 	// }
-    
+
     PT_DBG_PRINT( PTDBG_TRACE_ROUTINES, ("!!! FileBackup.sys --- %s, teststring\n", __FUNCTION__));
 	return FLT_PREOP_SUCCESS_WITH_CALLBACK;
 }
@@ -1184,6 +1188,11 @@ FLT_POSTOP_CALLBACK_STATUS FileBackupPostWrite (
     _In_ FLT_POST_OPERATION_FLAGS Flags
     )
 {
+	if (!gTest)
+	{
+		gTest = TRUE;
+		CreateDirectory(FltObjects, L"C:\\test\\test1\\");
+	}
 	PT_DBG_PRINT( PTDBG_TRACE_ROUTINES, ( "!!! FileBackup.sys --- %s\n", __FUNCTION__ ) );
 	return FLT_POSTOP_FINISHED_PROCESSING;
 }
