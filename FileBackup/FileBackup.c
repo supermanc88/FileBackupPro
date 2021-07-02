@@ -620,6 +620,7 @@ Return Value:
         }
     }
 
+
     return status;
 }
 
@@ -1152,15 +1153,18 @@ FLT_PREOP_CALLBACK_STATUS FileBackupPreWrite (
 
 	PT_DBG_PRINT( PTDBG_TRACE_ROUTINES, ( "!!! FileBackup.sys --- %s, writeLen = [%d], offset = [%d]\n", __FUNCTION__, writeLen, writeOffset.u.LowPart ) );
 
-	int i;
-	for (i = 0; i < writeLen; i++)
-	{
-		KdPrint(("0x%02x ", *((UCHAR *)writeBuffer + 1) ));
-		if ( i != 0 && i % 16 == 0 )
-		{
-			KdPrint(("\n"));
-		}
-	}
+    // 打印写入内容
+	// int i;
+	// for (i = 0; i < writeLen; i++)
+	// {
+	// 	KdPrint(("0x%02x ", *((UCHAR *)writeBuffer + 1) ));
+	// 	if ( i != 0 && i % 16 == 0 )
+	// 	{
+	// 		KdPrint(("\n"));
+	// 	}
+	// }
+    
+    PT_DBG_PRINT( PTDBG_TRACE_ROUTINES, ("!!! FileBackup.sys --- %s, teststring\n", __FUNCTION__));
 	return FLT_PREOP_SUCCESS_WITH_CALLBACK;
 }
 
