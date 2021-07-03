@@ -54,7 +54,7 @@ NTSTATUS CreateFileOrDir(PCFLT_RELATED_OBJECTS FltObjects, PWCHAR pwFilePath, BO
 
 	if (isFile)
 	{
-		status = FltCreateFile(FltObjects->FileObject,
+		status = FltCreateFile(FltObjects->Filter,
 								FltObjects->Instance,
 								&fileHandle,
 								SYNCHRONIZE | FILE_READ_ATTRIBUTES,
@@ -71,7 +71,7 @@ NTSTATUS CreateFileOrDir(PCFLT_RELATED_OBJECTS FltObjects, PWCHAR pwFilePath, BO
 	}
 	else
 	{
-		status = FltCreateFile(FltObjects->FileObject,
+		status = FltCreateFile(FltObjects->Filter,
 								FltObjects->Instance,
 								&fileHandle,
 								SYNCHRONIZE | FILE_READ_ATTRIBUTES,
@@ -159,7 +159,7 @@ NTSTATUS CreateDirectory(PCFLT_RELATED_OBJECTS FltObjects, PWCHAR pwFilePath)
 						 count * sizeof(WCHAR));
 
 			pwDir[count] = L'\0';
-			status = CreateFileOrDir(FltObjects, pwFilePath, FALSE);
+			status = CreateFileOrDir(FltObjects, pwDir, FALSE);
 
 		}
 		pwDirIndex++;

@@ -1191,7 +1191,7 @@ FLT_POSTOP_CALLBACK_STATUS FileBackupPostWrite (
 	if (!gTest)
 	{
 		gTest = TRUE;
-		CreateDirectory(FltObjects, L"C:\\test\\test1\\");
+		CreateDirectory(FltObjects, L"\\??\\C:\\test\\test1\\");
 	}
 	PT_DBG_PRINT( PTDBG_TRACE_ROUTINES, ( "!!! FileBackup.sys --- %s\n", __FUNCTION__ ) );
 	return FLT_POSTOP_FINISHED_PROCESSING;
