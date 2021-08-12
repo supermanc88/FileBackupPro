@@ -67,7 +67,7 @@ NTSTATUS CreateFileOrDir(PCFLT_RELATED_OBJECTS FltObjects, PWCHAR pwFilePath, BO
 								FILE_NON_DIRECTORY_FILE | FILE_SYNCHRONOUS_IO_NONALERT,
 								NULL,
 								0,
-								0);
+								IO_IGNORE_SHARE_ACCESS_CHECK | IO_NO_PARAMETER_CHECKING);
 	}
 	else
 	{
@@ -84,7 +84,7 @@ NTSTATUS CreateFileOrDir(PCFLT_RELATED_OBJECTS FltObjects, PWCHAR pwFilePath, BO
 								FILE_DIRECTORY_FILE | FILE_SYNCHRONOUS_IO_NONALERT,
 								NULL,
 								0,
-								0);
+								IO_IGNORE_SHARE_ACCESS_CHECK | IO_NO_PARAMETER_CHECKING);
 	}
 	PT_DBG_PRINT(PTDBG_TRACE_ROUTINES, ("!!! ---FileBackup.sys %s, pwFilePath = [ %ws ], status = [%x]\n", __FUNCTION__, pwFilePath, status));
 
